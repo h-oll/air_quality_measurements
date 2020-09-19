@@ -1,0 +1,55 @@
+#+TITLE: Air Quality Measurements
+#+DATE: 2020-09-19
+
+* Hardware used
+- Raspberry pi zero
+- PMSA003I (particle sensor)
+- SI1145 (UV-Visible-IR sensor)
+
+* Software 
+- Local DB PostgreSQL
+- Remote DB PostgreSQL
+- Vizualization Grafana
+
+* Hardware setup
+** Raspberry
+- Find the proper device holding the SDCard: =lsblk=
+- FAT format an sdcard: =sudo mkfs.fat -F 32 /dev/mmcblk0p1=
+- Copy the image to the device (not partition) =sudo dd bs=1M if=2020-08-20-raspios-buster-armhf-lite.img of=/dev/mmcblk0 conv=fsync=
+- Mount the card and access the =boot= partition
+- Add an empty file named =ssh= to enable ssh at start up: =touch ssh=
+- Use wpa_passphrase to generate the wpa_supplicant.conf to put in the same location:
+  - =wpa_passphrase <SSID> <passphrase>=
+  - The file looks like this: 
+#+begin_src 
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+network={
+	ssid=***
+	#psk=***
+	psk=***
+}
+#+end_src
+- Secure raspberry https://www.raspberrypi.org/documentation/configuration/security.md
+  - run =passwd=
+  - change hostname in =/etc/hostname=
+  - install =ufw= firewall: =sudo apt install ufw= 
+  - allow =ssh= and enable:  =sudo ufw allow 22 && sudo ufw enable=
+- Update software: =sudo apt update && sudo apt upgrade=
+- Allow I2C module via =raspi-config=
+- Load tools for i2c debugging: =sudo apt install i2c-tools=
+  - list your buses: =i2cdetect -l=
+  - list connected hardware: =i2cdetect 1= (1 is my i2c bus number)
+- Install pip: =sudo apt install python3-pip=
+- Install virtualenv: =pip3 install virtualenv=
+- Create project folder and environemnt: =mkdir aqm && cd aqm && python3 -m virtualenv .aqm_env= 
+** PMSA003I (particle sensor)
+https://learn.adafruit.com/pmsa003i/python-circuitpython
+- Install the python module for the corresponding hardware in the project's library: =source .aqm_env/bin/activate && pip3 install adafruit-circuitpython-pm25=
+- Run test code =test_pm.py=
+** SI1145 (UV-Visible-IR sensor)
+- Install the proper library: =pip3 install SI1145=
+- Run =test_uv.py=
+
+* Software
