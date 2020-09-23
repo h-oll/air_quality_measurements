@@ -53,3 +53,7 @@ https://learn.adafruit.com/pmsa003i/python-circuitpython
 - Run =test_uv.py=
 
 * Software
+** Raspberry
+- install git =sudo apt install git=
+- install sqlite3 =sudo apt install sqlite3=
+
