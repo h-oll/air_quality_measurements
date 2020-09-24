@@ -5,7 +5,7 @@
 - Raspberry pi zero
 - PMSA003I (particle sensor)
 - SI1145 (UV-Visible-IR sensor)
-
+- BME80
 * Software 
 - Local DB PostgreSQL
 - Remote DB PostgreSQL
@@ -51,6 +51,10 @@ https://learn.adafruit.com/pmsa003i/python-circuitpython
 ** SI1145 (UV-Visible-IR sensor)
 - Install the proper library: =pip3 install SI1145=
 - Run =test_uv.py=
+** BME680
+- Install library: =pip3 install bme680=
+- Run =test_air_qual.py
+- ? install smbus=
 
 * Software
 ** Raspberry
