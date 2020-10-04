@@ -5,7 +5,7 @@
 - Raspberry pi zero
 - PMSA003I (particle sensor)
 - SI1145 (UV-Visible-IR sensor)
-- BME80
+- BME680
 * Software 
 - Local DB PostgreSQL
 - Remote DB PostgreSQL
@@ -37,7 +37,7 @@ network={
   - install =ufw= firewall: =sudo apt install ufw= 
   - allow =ssh= and enable:  =sudo ufw allow 22 && sudo ufw enable=
 - Update software: =sudo apt update && sudo apt upgrade=
-- Allow I2C module via =raspi-config=
+- Allow I2C module via =sudo raspi-config=
 - Load tools for i2c debugging: =sudo apt install i2c-tools=
   - list your buses: =i2cdetect -l=
   - list connected hardware: =i2cdetect 1= (1 is my i2c bus number)
@@ -56,8 +56,18 @@ https://learn.adafruit.com/pmsa003i/python-circuitpython
 - Run =test_air_qual.py
 - ? install smbus=
 
+** install smbus
 * Software
 ** Raspberry
 - install git =sudo apt install git=
 - install sqlite3 =sudo apt install sqlite3=
+* server
+docker run -it --rm --link some-postgres:postgres postgres psql -h postgres -U postgres
 
+docker run --name some-postgres -e POSTGRES_PASSWORD=test -d postgres
+
+create database aqm;
+
+\c aqm
+
+docker run --name my-grafana -p 3000:3000 -d grafana/grafana
