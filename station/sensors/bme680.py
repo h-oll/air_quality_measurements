@@ -2,6 +2,7 @@ import logging
 import bme680
 import uuid
 import types
+from datetime import datetime
 
 logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ class Observable:
         self.sensor = sensor
 
 def format_read_value(observable, value):
-    logger.info(f'time: {str(datetime.now())}, value: {value}, unit: {observable.unit}, short_name: {observable.short_name}.')
+    logger.info(f'value: {value}, unit: {observable.unit}, short_name: {observable.short_name}.')
     return {
         "time": str(datetime.now()),
         "value": value,
@@ -29,17 +30,17 @@ def format_read_value(observable, value):
     }
     
 def read_temp(self):
-    return format_read_value(self, self.sensor.data.temperature)
+    return format_read_value(self, self.sensor.sensor.data.temperature)
 
 def read_pres(self):
-    return format_read_value(self, self.sensor.data.pressure)
+    return format_read_value(self, self.sensor.sensor.data.pressure)
 
 def read_relh(self):
-    return format_read_value(self, self.sensor.data.humidity)
+    return format_read_value(self, self.sensor.sensor.data.humidity)
 
 def read_gasr(self):
-    if self.sensor.data.heat_stable:
-        return format_read_value(self, self.sensor.data.gas_resistance)
+    if self.sensor.sensor.data.heat_stable:
+        return format_read_value(self, self.sensor.sensor.data.gas_resistance)
     else:
         return format_read_value(self, None)
 
@@ -64,23 +65,23 @@ class Sensor:
             self.sensor.set_gas_heater_duration(150)
             self.sensor.select_gas_heater_profile(0)
 
-            logger.info('Sensor initialized.')
+            logger.info(f'Sensor {self.uuid} initialized.')
                             
         except:
             logger.critical('Cannot connect to sensor.')
             raise NameError('Cannot connect to sensor.')
 
-        self.temp = Observable('1111', 'C', 'Temperature', 'Temp', 'raw', self.sensor)
-        self.pres = Observable('1111', 'hPa', 'Pressure', 'Pres', 'raw', self.sensor)
-        self.relh = Observable('1111', '%', 'Relative Humidity', 'RH', 'raw', self.sensor)
-        self.gasr = Observable('1111', 'Ohms', 'Gas Resistance', 'Gas Res', 'raw', self.sensor)
+        self.temp = Observable('1111', 'C', 'Temperature', 'Temp', 'raw', self)
+        self.pres = Observable('1111', 'hPa', 'Pressure', 'Pres', 'raw', self)
+        self.relh = Observable('1111', '%', 'Relative Humidity', 'RH', 'raw', self)
+        self.gasr = Observable('1111', 'Ohms', 'Gas Resistance', 'Gas Res', 'raw', self)
 
-        temp.read = types.MethodType(read_temp, temp)
-        pres.read = types.MethodType(read_pres, pres)
-        relh.read = types.MethodType(read_relh, relh)
-        gasr.read = types.MethodType(read_gasr, gasr)
+        self.temp.read = types.MethodType(read_temp, self.temp)
+        self.pres.read = types.MethodType(read_pres, self.pres)
+        self.relh.read = types.MethodType(read_relh, self.relh)
+        self.gasr.read = types.MethodType(read_gasr, self.gasr)
                             
-        self.observables = [temp, pres, relh, gasr]
+        self.observables = [self.temp, self.pres, self.relh, self.gasr]
         logger.info('4 Observables available.')
                             
     def acq(self): 

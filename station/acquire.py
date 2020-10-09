@@ -1,11 +1,10 @@
 import logging
 import uuid
-import datetime
-import time
+from datetime import datetime
 import psycopg2
 import psycopg2.extras
 
-from sensors import bme680
+from sensors import bme680, si1145
 import config
 
 ## Enable logging

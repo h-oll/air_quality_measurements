@@ -2,6 +2,7 @@ import logging
 import SI1145.SI1145 as SI1145
 import uuid
 import types
+from datetime import datetime
 
 logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ class Observable:
         self.sensor = sensor
 
 def format_read_value(observable, value):
-    logger.info(f'time: {str(datetime.now())}, value: {value}, unit: {observable.unit}, short_name: {observable.short_name}.')
+    logger.info(f'value: {value}, unit: {observable.unit}, short_name: {observable.short_name}.')
     return {
         "time": str(datetime.now()),
         "value": value,
@@ -28,37 +29,37 @@ def format_read_value(observable, value):
         "sensor_name": observable.sensor.name              
     }
     
-def read_temp(self):
-    return format_read_value(self, self.sensor.readIR())
+def read_ir(self):
+    return format_read_value(self, self.sensor.sensor.readIR())
 
-def read_pres(self):
-    return format_read_value(self, self.sensor.readVisible())
+def read_vi(self):
+    return format_read_value(self, self.sensor.sensor.readVisible())
 
-def read_relh(self):
-    return format_read_value(self, self.sensor.readUV())
+def read_uv(self):
+    return format_read_value(self, self.sensor.sensor.readUV())
   
 class Sensor:
     def __init__(self, uuid):
-        self.uuid = uuid
+        self.uuid = uuid 
         self.name = 'SI1145'
         try:
             self.sensor = SI1145.SI1145(busnum=1)
-            logger.info('Sensor initialized.')                            
+            logger.info(f'Sensor {self.uuid} initialized.')                            
         except:
             logger.critical('Cannot connect to sensor.')
             raise NameError('Cannot connect to sensor.')
 
-        self.ir = Observable('1111', 'AU', 'Infrared', 'IR', 'raw', self.sensor)
-        self.vi = Observable('1111', 'AU', 'Visible', 'Vis', 'raw', self.sensor)
-        self.uv = Observable('1111', 'AU', 'Ultraviolet', 'UV', 'raw', self.sensor)
+        self.ir = Observable('1111', 'AU', 'Infrared', 'IR', 'raw', self)
+        self.vi = Observable('1111', 'AU', 'Visible', 'Vis', 'raw', self)
+        self.uv = Observable('1111', 'AU', 'Ultraviolet', 'UV', 'raw', self)
 
 
-        ir.read = types.MethodType(read_ir, temp)
-        vi.read = types.MethodType(read_vi, pres)
-        uv.read = types.MethodType(read_uv, relh)
+        self.ir.read = types.MethodType(read_ir, self.ir)
+        self.vi.read = types.MethodType(read_vi, self.vi)
+        self.uv.read = types.MethodType(read_uv, self.uv)
 
                             
-        self.observables = [ir, vi, uv]
+        self.observables = [self.ir, self.vi, self.uv]
         logger.info('3 Observables available.')
                             
     def acq(self): 
