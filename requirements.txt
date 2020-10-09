@@ -1,1 +1,6 @@
- 
+configparser==5.0.1
+psycopg2-binary==2.8.6
+SI1145==1.0.2
+bme680==1.0.5
+adafruit-circuitpython-pm25==1.0.3
+smbus==1.1.post2
