@@ -1,5 +1,5 @@
 shell.nix
-database.ini
+configuration.ini
 *~
 *.db
 nohup.out

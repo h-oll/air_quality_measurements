@@ -1,8 +1,8 @@
 from datetime import datetime
 import logging
+import uuid
 
 ## Enable logging
-logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def format_observation(observable, outcome):
@@ -17,3 +17,12 @@ def format_observation(observable, outcome):
         "apparatus_uuid": observable.apparatus.uuid,
         "apparatus_name": observable.apparatus.name              
     }
+
+
+class Observation:
+    def __init__(self, observable):
+        self.uuid = uuid.uuid4()
+        self.observable = observable
+        self.outcome = observable.apparatus.data[observable.short_name]
+        self.time = observable.apparatus.data["time"]
+        logger.info(f'time: {self.time}, outcome: {self.outcome}, unit: {self.observable.unit}, short_name: {self.observable.short_name}, apparatus: {self.observable.apparatus.name}".')

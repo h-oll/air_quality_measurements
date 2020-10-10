@@ -5,26 +5,9 @@ import types
 from datetime import datetime
 
 from .observable import Observable
-from .observation import format_observation
 from .apparatus import Apparatus
 
-logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-    
-def read_temp(self):
-    return format_observation(self, self.apparatus.sensor.data.temperature)
-
-def read_pres(self):
-    return format_observation(self, self.apparatus.sensor.data.pressure)
-
-def read_relh(self):
-    return format_observation(self, self.apparatus.sensor.data.humidity)
-    
-def read_gasr(self):
-    return format_observation(self, self.apparatus.sensor.data.gas_resistance)
-
-def read_tsta(self): 
-    return format_observation(self, self.apparatus.sensor.data.heat_stable)
     
 class BME680(Apparatus):
     def __init__(self, uuid):
@@ -50,20 +33,24 @@ class BME680(Apparatus):
             logger.critical('Failed to initialize apparatus, cannot connect to sensor.')
             raise NameError('Failed to initialize apparatus, cannot connect to sensor.')
 
-        self.temp = Observable('1111', 'C', 'Temperature', 'Temp', 'raw', self)
-        self.pres = Observable('1111', 'hPa', 'Pressure', 'Pres', 'raw', self)
-        self.relh = Observable('1111', '%', 'Relative Humidity', 'RH', 'raw', self)
-        self.gasr = Observable('1111', 'Ohms', 'Gas Resistance', 'Gas Res', 'raw', self)
-        self.tsta = Observable('1111', 'NA', 'Temperature stability', 'Temp Stab', 'raw', self)
+        self.data = {"temp":None, "pres":None, "relh":None, "gasr":None, "tsta":None}
+
+        self.temp = Observable('1111', 'C', 'Temperature', 'temp', 'raw', self)
+        self.pres = Observable('1111', 'hPa', 'Pressure', 'pres', 'raw', self)
+        self.relh = Observable('1111', '%', 'Relative Humidity', 'relh', 'raw', self)
+        self.gasr = Observable('1111', 'Ohms', 'Gas Resistance', 'gasr', 'raw', self)
+        self.tsta = Observable('1111', 'NA', 'Temperature stability', 'tsta', 'raw', self)
         
-        self.temp.read_observation = types.MethodType(read_temp, self.temp)
-        self.pres.read_observation = types.MethodType(read_pres, self.pres)
-        self.relh.read_observation = types.MethodType(read_relh, self.relh)
-        self.gasr.read_observation = types.MethodType(read_gasr, self.gasr)
-        self.tsta.read_observation = types.MethodType(read_tsta, self.tsta)
-                            
         self.observables = [self.temp, self.pres, self.relh, self.gasr, self.tsta]
         logger.info('5 Observables available.')
                             
     def observe(self): 
         self.sensor.get_sensor_data()        
+        self.data["temp"] = self.sensor.data.temperature
+        self.data["pres"] = self.sensor.data.pressure
+        self.data["relh"] = self.sensor.data.humidity
+        self.data["gasr"] = self.sensor.data.gas_resistance
+        self.data["tsta"] = float(self.sensor.data.heat_stable)
+        self.data["time"] = datetime.now()
+        for i in self.data: 
+            logger.debug(f'outcome: {self.data[i]}, short_name: {i}')

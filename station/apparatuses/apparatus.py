@@ -1,6 +1,5 @@
 import logging 
 
-logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Apparatus:
@@ -15,6 +14,7 @@ class Apparatus:
         
     
     def get_observations(self):
-        for o in self.observables:
-            o.read_observation()
-
+        # for o in self.observables:
+        #     o.read_observation(o.short_name)
+        return [o.get_observation() for o in self.observables]
+        
