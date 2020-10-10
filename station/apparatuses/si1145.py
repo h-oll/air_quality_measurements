@@ -2,6 +2,7 @@ import logging
 import SI1145.SI1145 as Sensor
 import uuid
 from datetime import datetime
+import configparser
 
 from .observable import Observable
 from .apparatus import Apparatus
@@ -20,10 +21,13 @@ class SI1145(Apparatus):
             raise NameError('Failed to initialize apparatus, cannot connect to sensor.')
 
         self.data = {"ir":None, "vi":None, "uv":None}
+
+        config = configparser.ConfigParser()
+        config.read('configuration.ini')
         
-        self.ir = Observable('1111', 'AU', 'Infrared', 'ir', 'raw', self)
-        self.vi = Observable('1111', 'AU', 'Visible', 'vi', 'raw', self)
-        self.uv = Observable('1111', 'AU', 'Ultraviolet', 'uv', 'raw', self)
+        self.ir = Observable(config["observables"]["SI1145.ir"], 'AU', 'Infrared', 'ir', 'raw', self)
+        self.vi = Observable(config["observables"]["SI1145.vi"], 'AU', 'Visible', 'vi', 'raw', self)
+        self.uv = Observable(config["observables"]["SI1145.uv"], 'AU', 'Ultraviolet', 'uv', 'raw', self)
 
         self.observables = [self.ir, self.vi, self.uv]
         logger.info('3 Observables available.')

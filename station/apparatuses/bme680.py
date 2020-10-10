@@ -3,6 +3,7 @@ import bme680
 import uuid
 import types
 from datetime import datetime
+import configparser
 
 from .observable import Observable
 from .apparatus import Apparatus
@@ -28,19 +29,22 @@ class BME680(Apparatus):
             self.sensor.set_gas_heater_temperature(320)
             self.sensor.set_gas_heater_duration(150)
             self.sensor.select_gas_heater_profile(0)
-            logger.info(f'Apparatus initialized.')
+            logger.info(f'Sensor initialized.')
         except:
-            logger.critical('Failed to initialize apparatus, cannot connect to sensor.')
-            raise NameError('Failed to initialize apparatus, cannot connect to sensor.')
+            logger.critical('Failed to initialize sensor, cannot connect.')
+            raise NameError('Failed to initialize sensor, cannot connect.')
 
         self.data = {"temp":None, "pres":None, "relh":None, "gasr":None, "tsta":None}
 
-        self.temp = Observable('1111', 'C', 'Temperature', 'temp', 'raw', self)
-        self.pres = Observable('1111', 'hPa', 'Pressure', 'pres', 'raw', self)
-        self.relh = Observable('1111', '%', 'Relative Humidity', 'relh', 'raw', self)
-        self.gasr = Observable('1111', 'Ohms', 'Gas Resistance', 'gasr', 'raw', self)
-        self.tsta = Observable('1111', 'NA', 'Temperature stability', 'tsta', 'raw', self)
+        config = configparser.ConfigParser()
+        config.read('configuration.ini')
         
+        self.temp = Observable(config["observables"]["BME680.temp"], 'C', 'Temperature', 'temp', 'raw', self)
+        self.pres = Observable(config["observables"]["BME680.pres"], 'hPa', 'Pressure', 'pres', 'raw', self)
+        self.relh = Observable(config["observables"]["BME680.relh"], '%', 'Relative Humidity', 'relh', 'raw', self)
+        self.gasr = Observable(config["observables"]["BME680.gasr"], 'Ohms', 'Gas Resistance', 'gasr', 'raw', self)
+        self.tsta = Observable(config["observables"]["BME680.tsta"], 'NA', 'Temperature stability', 'tsta', 'raw', self)
+
         self.observables = [self.temp, self.pres, self.relh, self.gasr, self.tsta]
         logger.info('5 Observables available.')
                             
