@@ -41,8 +41,8 @@ network={
 - Load tools for i2c debugging: =sudo apt install i2c-tools=
   - list your buses: =i2cdetect -l=
   - list connected hardware: =i2cdetect 1= (1 is my i2c bus number)
-- Install pip: =sudo apt install python3-pip=
-- Install virtualenv: =pip3 install virtualenv=
+# - Install pip: =sudo apt install python3-virtualenv=
+- Install virtualenv: =sudo apt install python3-virtualenv= 
 - Create project folder and environemnt: =mkdir aqm && cd aqm && python3 -m virtualenv .aqm_env= 
 ** PMSA003I (particle sensor)
 https://learn.adafruit.com/pmsa003i/python-circuitpython
