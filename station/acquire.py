@@ -34,7 +34,7 @@ psycopg2.extras.register_uuid() # Allow uuid in postgre
 ## Observable Insertion function
 def insert_observations(observations):
     """ insert new observation """
-    sql = """INSERT INTO observations(id, time, value, unit) VALUES(%s, %s, %s, %s)"""
+    sql = """INSERT INTO observations(uuid, time, outcome, observable_uuid) VALUES(%s, %s, %s, %s)"""
     conn = None
     try:
         # read database configuration
@@ -45,10 +45,10 @@ def insert_observations(observations):
         cur = conn.cursor()
         # execute the INSERT statement
         cur.executemany(sql, observations)
-        # commit the changes to the database
-        conn.commit()
         # close communication with the database
         cur.close()
+        # commit the changes to the database
+        conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
@@ -72,7 +72,7 @@ while True:
         observations = observations + si1145.get_observations()
 
     # Insert observations in DB
-    insert_observations([(o.uuid, o.time, o.outcome, f'{o.observable.unit} - {o.observable.name}') for o in observations])
+    insert_observations([(o.uuid, o.time, o.outcome, o.observable.uuid) for o in observations])
 
         
 
