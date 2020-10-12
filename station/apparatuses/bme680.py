@@ -2,7 +2,7 @@ import logging
 import bme680
 import uuid
 import types
-from datetime import datetime
+from datetime import datetime, timezone
 import configparser
 
 from .observable import Observable
@@ -11,8 +11,8 @@ from .apparatus import Apparatus
 logger = logging.getLogger(__name__)
     
 class BME680(Apparatus):
-    def __init__(self, uuid):
-        super().__init__('BME680', uuid)
+    def __init__(self, apparatus_uuid):
+        super().__init__('BME680', apparatus_uuid)
 
         try: 
             try:
@@ -39,11 +39,11 @@ class BME680(Apparatus):
         config = configparser.ConfigParser()
         config.read('configuration.ini')
         
-        self.temp = Observable(config["observables"]["BME680.temp"], 'C', 'Temperature', 'temp', 'raw', self)
-        self.pres = Observable(config["observables"]["BME680.pres"], 'hPa', 'Pressure', 'pres', 'raw', self)
-        self.relh = Observable(config["observables"]["BME680.relh"], '%', 'Relative Humidity', 'relh', 'raw', self)
-        self.gasr = Observable(config["observables"]["BME680.gasr"], 'Ohms', 'Gas Resistance', 'gasr', 'raw', self)
-        self.tsta = Observable(config["observables"]["BME680.tsta"], 'NA', 'Temperature stability', 'tsta', 'raw', self)
+        self.temp = Observable(uuid.UUID(config["observables"]["BME680.temp"]), 'C', 'Temperature', 'temp', 'raw', self)
+        self.pres = Observable(uuid.UUID(config["observables"]["BME680.pres"]), 'hPa', 'Pressure', 'pres', 'raw', self)
+        self.relh = Observable(uuid.UUID(config["observables"]["BME680.relh"]), '%', 'Relative Humidity', 'relh', 'raw', self)
+        self.gasr = Observable(uuid.UUID(config["observables"]["BME680.gasr"]), 'Ohms', 'Gas Resistance', 'gasr', 'raw', self)
+        self.tsta = Observable(uuid.UUID(config["observables"]["BME680.tsta"]), 'NA', 'Temperature stability', 'tsta', 'raw', self)
 
         self.observables = [self.temp, self.pres, self.relh, self.gasr, self.tsta]
         logger.info('5 Observables available.')
@@ -55,6 +55,6 @@ class BME680(Apparatus):
         self.data["relh"] = self.sensor.data.humidity
         self.data["gasr"] = self.sensor.data.gas_resistance
         self.data["tsta"] = float(self.sensor.data.heat_stable)
-        self.data["time"] = datetime.now()
+        self.data["time"] = datetime.fromtimestamp(datetime.now().timestamp(), tz=timezone.utc)
         for i in self.data: 
             logger.debug(f'outcome: {self.data[i]}, short_name: {i}')

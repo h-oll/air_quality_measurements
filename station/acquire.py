@@ -1,6 +1,5 @@
 import logging
 import uuid
-from datetime import datetime
 import time
 import configparser
 
@@ -22,10 +21,10 @@ config.read('configuration.ini')
 logger.info(f'Found {len(config["apparatuses"])}: {config["apparatuses"]}')
 
 if "BME680" in config["apparatuses"]:
-    bme680 = BME680(config["apparatuses"]["BME680"]) #temperature, pressure, rel. humidity, gas resistance
+    bme680 = BME680(uuid.UUID(config["apparatuses"]["BME680"])) #temperature, pressure, rel. humidity, gas resistance
 
 if "SI1145" in config["apparatuses"]:
-    si1145 = SI1145(config["apparatuses"]["SI1145"]) #ir, visible, uv levels
+    si1145 = SI1145(uuid.UUID(config["apparatuses"]["SI1145"])) #ir, visible, uv levels
 
 ## Configure Postgre
 psycopg2.extras.register_uuid() # Allow uuid in postgre

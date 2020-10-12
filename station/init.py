@@ -71,7 +71,7 @@ VALUES (%s, %s, %s)"""
         params = config["postgresql"]
         conn = psycopg2.connect(**params)
         cur = conn.cursor()
-        cur.execute(sql, (config["station"]["uuid"], config["station"]["name"], config["station"]["mobile"]))
+        cur.execute(sql, (uuid.UUID(config["station"]["uuid"]), config["station"]["name"], config["station"]["mobile"]))
         cur.close()
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
@@ -85,11 +85,11 @@ if __name__ == "__main__":
 
     # create_station()
         
-    # bme680 = BME680(config["apparatuses"]["BME680"])
-    # bme680.db_create_apparatus()
-    # bme680.db_create_observables()
-    # si1145 = SI1145(config["apparatuses"]["SI1145"])
-    # si1145.db_create_apparatus()
-    # si1145.db_create_observables()
+    # bme680 = BME680(uuid.UUID(config["apparatuses"]["BME680"]))
+    # bme680.db_create()
+    # for o in bme680.observables: o.db_create()
+    # si1145 = SI1145(uuid.UUID(config["apparatuses"]["SI1145"]))
+    # si1145.db_create()
+    # for o in si1145.observables: o.db_create()
 
     print('done')
