@@ -5,6 +5,7 @@ import uuid
 
 from apparatuses.bme680 import BME680
 from apparatuses.si1145 import SI1145
+from apparatuses.veml6070 import VEML6070
 
 config = configparser.ConfigParser()
 config.read('configuration.ini')
@@ -88,8 +89,13 @@ if __name__ == "__main__":
     # bme680 = BME680(uuid.UUID(config["apparatuses"]["BME680"]))
     # bme680.db_create()
     # for o in bme680.observables: o.db_create()
+
     # si1145 = SI1145(uuid.UUID(config["apparatuses"]["SI1145"]))
     # si1145.db_create()
     # for o in si1145.observables: o.db_create()
 
+    # veml6070 = VEML6070(uuid.UUID(config["apparatuses"]["VEML6070"]))
+    # veml6070.db_create()
+    # for o in veml6070.observables: o.db_create()
+    
     print('done')

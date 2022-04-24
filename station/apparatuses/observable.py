@@ -1,3 +1,5 @@
+import psycopg2
+import psycopg2.extras
 import configparser
 from .observation import Observation
 #from .observation import format_observation

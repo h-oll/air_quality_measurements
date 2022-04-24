@@ -8,6 +8,7 @@ import psycopg2.extras
 
 from apparatuses.bme680 import BME680
 from apparatuses.si1145 import SI1145
+from apparatuses.veml6070 import VEML6070
 
 ## Enable logging
 logging.basicConfig(format='%(asctime)s | %(name)s | %(levelname)s | %(message)s', level=logging.INFO)
@@ -26,7 +27,11 @@ if "BME680" in config["apparatuses"]:
 if "SI1145" in config["apparatuses"]:
     si1145 = SI1145(uuid.UUID(config["apparatuses"]["SI1145"])) #ir, visible, uv levels
 
-## Configure Postgre
+if "VEML6070" in config["apparatuses"]:
+    veml6070 = VEML6070(uuid.UUID(config["apparatuses"]["VEML6070"])) #ir, visible, uv levels
+    
+
+    ## Configure Postgre
 psycopg2.extras.register_uuid() # Allow uuid in postgre
 
 
@@ -63,13 +68,18 @@ while True:
     if "SI1145" in config["apparatuses"]:
         si1145.observe()
 
+    if "VEML6070" in config["apparatuses"]:
+        veml6070.observe()
+        
     # Get observations
     observations = []
     if "BME680" in config["apparatuses"]:
         observations = observations + bme680.get_observations()
     if "SI1145" in config["apparatuses"]:
         observations = observations + si1145.get_observations()
-
+    if "VEML6070" in config["apparatuses"]:
+        observations = observations + veml6070.get_observations()
+        
     # Insert observations in DB
     insert_observations([(o.uuid, o.time, o.outcome, o.observable.uuid) for o in observations])
 
