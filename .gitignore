@@ -1,8 +1,8 @@
-shell.nix
-configuration.ini
+# shell.nix
+# configuration.ini
 *~
-*.db
-nohup.out
+# *.db
+# nohup.out
 
 Byte-compiled / optimized / DLL files
 __pycache__/
