@@ -71,3 +71,8 @@ create database aqm;
 \c aqm
 
 docker run --name my-grafana -p 3000:3000 -d grafana/grafana
+* NOTE ABOUT AIR CASTING
+https://github.com/HabitatMap/AirCastingAndroidClient/issues/44
+ Got it. Does this help,
+ https://github.com/HabitatMap/AirCastingAndroidClient/blob/master/arduino/aircasting/Airbeam2_Firmware_3_19_18/Strings.h
+Perfect! Thx.
