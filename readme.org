@@ -2,17 +2,29 @@
 #+DATE: 2020-09-19
 
 * Hardware used
+:PROPERTIES:
+:ID:       38a886d3-36cb-4e9e-a284-10a53e9a6dcf
+:END:
 - Raspberry pi zero
 - PMSA003I (particle sensor)
 - SI1145 (UV-Visible-IR sensor)
 - BME680
 * Software 
+:PROPERTIES:
+:ID:       8b66f9e8-1e9a-447f-abda-a1d0e3c4a9d1
+:END:
 - Local DB PostgreSQL
 - Remote DB PostgreSQL
 - Vizualization Grafana
 
 * Hardware setup
+:PROPERTIES:
+:ID:       3e9a2b52-6077-4962-8cac-19ae4839c6f6
+:END:
 ** Raspberry
+:PROPERTIES:
+:ID:       343aae4c-f3e4-42d0-9e72-b77c271df345
+:END:
 - Find the proper device holding the SDCard: =lsblk=
 - FAT format an sdcard: =sudo mkfs.fat -F 32 /dev/mmcblk0p1=
 - Copy the image to the device (not partition) =sudo dd bs=1M if=2020-08-20-raspios-buster-armhf-lite.img of=/dev/mmcblk0 conv=fsync=
@@ -45,23 +57,44 @@ network={
 - Install virtualenv: =sudo apt install python3-virtualenv= 
 - Create project folder and environemnt: =mkdir aqm && cd aqm && python3 -m virtualenv .aqm_env= 
 ** PMSA003I (particle sensor)
+:PROPERTIES:
+:ID:       c6b31425-9668-4dcc-9fa9-c2528004bd27
+:END:
 https://learn.adafruit.com/pmsa003i/python-circuitpython
 - Install the python module for the corresponding hardware in the project's library: =source .aqm_env/bin/activate && pip3 install adafruit-circuitpython-pm25=
 - Run test code =test_pm.py=
 ** SI1145 (UV-Visible-IR sensor)
+:PROPERTIES:
+:ID:       4c73f29f-9d27-49e3-afb1-fca11762d21e
+:END:
 - Install the proper library: =pip3 install SI1145=
 - Run =test_uv.py=
 ** BME680
+:PROPERTIES:
+:ID:       f6656631-8695-4af4-99f0-fd4714fc2a89
+:END:
 - Install library: =pip3 install bme680=
 - Run =test_air_qual.py
 - ? install smbus=
 
 ** install smbus
+:PROPERTIES:
+:ID:       79729443-7c3c-4044-a5ba-4171f126b7ba
+:END:
 * Software
+:PROPERTIES:
+:ID:       0074d774-1e62-4f76-921a-6316fbdff98f
+:END:
 ** Raspberry
+:PROPERTIES:
+:ID:       fbadf30b-d0ac-4166-8dc0-514244c082f6
+:END:
 - install git =sudo apt install git=
 - install sqlite3 =sudo apt install sqlite3=
 * server
+:PROPERTIES:
+:ID:       4dcf2ef4-0fc5-41b8-95c8-cedd36eeecce
+:END:
 docker run -it --rm --link some-postgres:postgres postgres psql -h postgres -U postgres
 
 docker run --name some-postgres -e POSTGRES_PASSWORD=test -d postgres
@@ -72,6 +105,9 @@ create database aqm;
 
 docker run --name my-grafana -p 3000:3000 -d grafana/grafana
 * NOTE ABOUT AIR CASTING
+:PROPERTIES:
+:ID:       2b8bb8ed-4c20-4569-9027-76efc4d9d5fd
+:END:
 https://github.com/HabitatMap/AirCastingAndroidClient/issues/44
  Got it. Does this help,
  https://github.com/HabitatMap/AirCastingAndroidClient/blob/master/arduino/aircasting/Airbeam2_Firmware_3_19_18/Strings.h
